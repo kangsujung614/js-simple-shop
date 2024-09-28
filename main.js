@@ -27,7 +27,7 @@ products.forEach((e, index)=>{
 })
 
 // 선택한 옵션을 화면에 출력하기 위한 요소 준비
-let mainNode = document.querySelector('.main');
+let submitNode = document.getElementById('submit');
 let shoppingSectionNode = document.createElement('div');
 shoppingSectionNode.setAttribute('class','shopping-section');
 let ulNode = document.createElement('ul'); // 선택한 옵션을 넣을 목록
@@ -56,12 +56,44 @@ const printSelectedProduct = () => {
 
     shoppingSectionNode.appendChild(headerElementNode);
     shoppingSectionNode.appendChild(ulNode);
-    mainNode.appendChild(shoppingSectionNode);
+    submitNode.before(shoppingSectionNode);
+}
+
+// 선택한 상품들의 가격을 합산한 결과(최종 금액)를 출력하기 위한 요소 준비
+let priceTitleNode = document.createElement('h2');
+let priceTextNode;
+
+// 선택한 상품들의 가격을 합산하고, 화면에 출력하는 함수 정의
+const sum = (array) => {
+    // 선택한 상품들의 가격 합산
+    let sum = 0;
+    array.forEach(e => {
+        sum += parseInt(e.price);
+    })
+
+    // 선택한 상품들의 총액 출력
+    priceTitleNode.replaceChildren();
+    priceTextNode = document.createTextNode(`총액: ${sum}`);
+    priceTitleNode.appendChild(priceTextNode);
+    submitNode.before(priceTitleNode);
+
+    return sum;
 }
 
 // select 요소를 클릭할 때마다 이벤트 발생
 // 1. 선택한 상품을 화면에 출력
 // 2. 선택한 상품의 가격을 계산하여 출력
 selectNode.addEventListener('click', () => {
-  printSelectedProduct(); // 1. 선택한 상품 화면에 출력하는 함수 호출
+  printSelectedProduct(); // 1. 선택한 상품을 화면에 출력하는 함수 호출
+
+    // 2. 선택한 상품의 가격을 합산하여 출력하기 위해..
+    // 2-1. 선택한 상품을 객체로 생성(Product 생성자 함수)
+    let arr;
+    selectedProducts = selectedProducts.map(e => {
+        arr = e.split(" - ");
+        return new Product(arr[0], arr[1]);
+    })
+    // console.dir(selectedProducts);
+    // 2-2. 가격을 합산하여 화면에 출력하는 함수 호출
+    sum(selectedProducts);
 })
