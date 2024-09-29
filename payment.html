@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <style>
+        .payment-form *{
+            display: block;
+        }
+        #payment-button {
+            margin-top: 20px;
+        }
+        #cradit-card-number{
+            margin-top: 4px;
+        }
+    </style>
+    <script>
+        opener.payment = this;
+        let price = opener.sendPrice();
+    </script>
+</head>
+<body>
+    <article class="payment-main">
+        <h2 class="payment-title">결제창</h2>
+        <p id="price-direction"></p>
+        <form action="#" class="payment-form">
+            <label for="payment-info">신용카드 번호를 입력하고 결제 버튼을 눌러 주세요.</label>
+            <input type="text" name="payment-info" id="credit-card-number"/>
+            <input type="submit" value="결제" id="payment-button"/>
+        </form>
+    </article>
+
+    <script>
+        // 결제 금액 화면에 출력하여 안내
+        const priceDirectionNode = document.getElementById('price-direction');
+        priceDirectionNode.innerText = `${price}원을 결제하겠습니다.`;
+
+        // 결제 버튼 클릭 시 이벤트 발생
+        const paymentButtonNode = document.getElementById('payment-button');
+        paymentButtonNode.addEventListener('click', (e)=> {
+            e.preventDefault();
+            // 유효성 검증 후 결제
+            const inputNodeValue = document.getElementById('credit-card-number').value;
+            const regex = /^[0-9]*$/;
+            inputNodeValue.trim();
+            if(regex.test(inputNodeValue) && inputNodeValue.length > 0){
+                opener.paymentCompleted(inputNodeValue, price);
+            } else if(inputNodeValue.length === 0){
+                alert('결제할 신용카드 번호를 입력해주세요.');
+            } else {
+                alert('숫자만 입력해주세요.');
+            }
+        })
+    </script>
+</body>
+</html>
